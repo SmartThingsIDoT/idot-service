@@ -2,9 +2,9 @@
   "title": "Device Registration Request Schema",
   "type": "object",
   "properties": {
-    "device_token": {
+    "auth_code": {
       "type": "string",
-      "description": "token for device access"
+      "description": "auth code for device token request"
     },
     "client_id": {
       "type": "string",
