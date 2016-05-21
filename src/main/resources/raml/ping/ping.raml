@@ -1,0 +1,24 @@
+#%RAML 0.8
+title: Health Check
+version: 1
+protocols: [ HTTPS ]
+baseUri: https://idot-service.appspot.com/api/v1
+mediaType: application/json
+schemas:
+    - HealthStatus: !include HealthStatusResponse.json
+
+/ping:
+    displayName: Health Check API
+    description: |
+        Health Check Status API
+    get:
+        description: |
+            Get health status of the service.
+        headers:
+        responses:
+            200:
+                description: health status of the service
+                body:
+                    application/json:
+                        example: !include healthStatus200Example.json
+                        schema: HealthStatus

@@ -1,0 +1,7 @@
+[
+    {
+        "status_name": "overall service status",
+        "status_type": "BOOLEAN",
+        "status_value": "TRUE"
+    }
+]

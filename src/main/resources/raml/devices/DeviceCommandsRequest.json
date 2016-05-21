@@ -1,0 +1,18 @@
+{
+  "title": "Device Commands Request Schema",
+    "type": "object",
+    "properties": {
+      "cmd_name": {
+        "type": "string",
+        "description": "name of command"
+      },
+      "cmd_type": {
+        "type": "string",
+        "description": "type of command, can be BOOLEAN | NUMBER | RANGE"
+      },
+      "cmd_value": {
+        "type": "string",
+        "description": "value for command"
+      }
+    }
+}

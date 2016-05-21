@@ -1,0 +1,21 @@
+{
+  "title": "Service Health Status Response Schema",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "status_name": {
+        "type": "string",
+        "description": "name of status property"
+      },
+      "status_type": {
+        "type": "string",
+        "description": "type of status property, can be BOOLEAN | NUMBER | STRING"
+      },
+      "status_value": {
+        "type": "string",
+        "description": "value of the status property"
+      }
+    }
+  }
+}

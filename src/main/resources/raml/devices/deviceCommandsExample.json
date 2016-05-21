@@ -1,0 +1,5 @@
+{
+    "cmd_name" : "on/off",
+    "cmd_type" : "BOOLEAN",
+    "cmd_value" : "FALSE"
+}
