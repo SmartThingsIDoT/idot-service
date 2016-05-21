@@ -1,0 +1,18 @@
+{
+  "title": "Device Registration Request Schema",
+  "type": "object",
+  "properties": {
+    "device_token": {
+      "type": "string",
+      "description": "token for device access"
+    },
+    "client_id": {
+      "type": "string",
+      "description": "client ID for device app"
+    },
+    "client_secret": {
+      "type": "string",
+      "description": "client secret for device app"
+    }
+  }
+}

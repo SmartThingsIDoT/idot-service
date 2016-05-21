@@ -1,0 +1,8 @@
+{
+    [
+        {
+            "cmd_name" : "on/off",
+            "cmd_type" : "BOOLEAN"
+        }
+    ]
+}

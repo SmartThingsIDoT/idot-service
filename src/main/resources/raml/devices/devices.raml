@@ -1,0 +1,183 @@
+#%RAML 0.8
+title: SmartThings Devices
+version: 1
+protocols: [ HTTPS ]
+baseUri: https://idot-service.appspot.com/api/v1
+mediaType: application/json
+schemas:
+    - DeviceReqistration: !include DeviceRegistrationRequest.json
+      ResourceCreationResponse: !include ResourceCreationResponse.json
+      AccessibleDevices: !include AccessibleDevicesResponse.json
+      DeviceDetails : !include DeviceDetailsResponse.json
+      DeviceCommands : !include DeviceCommandsRequest.json
+
+/devices:
+    displayName: SmartThings Devices API
+    description: |
+        SmartThings devices API
+    get:
+        description: |
+            Get all devices accessible to the user. This API call must contain
+            an OAuth2 bearer token from an iF User with "USER" role for the project.
+        headers:
+            Authorization:
+                description: Authorization header with OAuth2 bearer token from iF IDP service
+                example: Bearer 0cb3887a-7f68-490a-bf15-c89aff96a6fb
+        responses:
+            200:
+                description: found accessible devices
+                body:
+                    application/json:
+                        example: !include accessibleDevices200Example.json
+                        schema: AccessibleDevices
+            401:
+                description: Bearer token authentication failed
+                body:
+                    application/json:
+                        example: !include ../common/401Example.json
+            404:
+                description: no devices accessible by the user
+    post:
+        description: |
+            Onboard a new device with the project. This API call must contain
+            an OAuth2 bearer token from an iF User with "ADMIN" role for the project.
+        headers:
+            Authorization:
+                description: Authorization header with OAuth2 bearer token from iF IDP service
+                example: Bearer 0cb3887a-7f68-490a-bf15-c89aff96a6fb
+        body:
+            application/json:
+                example: !include deviceRegistrationExample.json
+                schema: DeviceReqistration
+
+        responses:
+            201:
+                description: new application registered successfully
+                body:
+                    application/json:
+                        schema: ResourceCreationResponse
+                        example: !include resourceCreation201Example.json
+            401:
+                description: Bearer token authentication failed
+                body:
+                    application/json:
+                        example: !include ../common/401Example.json
+            403:
+                description: User is not an ADMIN for the project
+                body:
+                    application/json:
+                        example: !include ../common/403Example.json
+            404:
+                description: project does not exists
+
+/devices/{deviceId}:
+    displayName: Device Details
+    uriParameters:
+        deviceId:
+            displayName: deviceId
+            description: UUID of onboarded device
+            type: string
+    description: |
+        Device details APIs. This API call must contain
+        an OAuth2 bearer token from an iF User with "PATIENT" role for the project.
+    get:
+        description: |
+            Get device details
+        headers:
+            Authorization:
+                description: Authorization header with OAuth2 bearer token from iF IDP service
+                example: Bearer 0cb3887a-7f68-490a-bf15-c89aff96a6fb
+        responses:
+            200:
+                description: found device details
+                body:
+                    application/json:
+                        example: !include deviceDetailsExample.json
+                        schema: DeviceDetails
+            401:
+                description: Bearer token authentication failed
+                body:
+                    application/json:
+                        example: !include ../common/401Example.json
+            403:
+                description: User is not an PATIENT for the project
+                body:
+                    application/json:
+                        example: !include ../common/403Example.json
+            404:
+                description: device does not exists
+
+/devices/{deviceId}/status:
+    displayName: Device status
+    uriParameters:
+        deviceId:
+            displayName: deviceId
+            description: UUID of onboarded device
+            type: string
+    description: |
+        Device control APIs. This API call must contain
+        an OAuth2 bearer token from an iF User with "VIEWER" role for the project.
+    get:
+        description: |
+            Device status
+        headers:
+            Authorization:
+                description: Authorization header with OAuth2 bearer token from iF IDP service
+                example: Bearer 0cb3887a-7f68-490a-bf15-c89aff96a6fb
+        responses:
+            200:
+                description: device status read successfully
+                body:
+                    application/json:
+                        example: !include deviceStatusExample.json
+                        schema: DeviceStatus
+            401:
+                description: Bearer token authentication failed
+                body:
+                    application/json:
+                        example: !include ../common/401Example.json
+            403:
+                description: User is not an VIEWER for the project
+                body:
+                    application/json:
+                        example: !include ../common/403Example.json
+            404:
+                description: application does not exists
+
+/devices/{deviceId}/commands:
+    displayName: Device control
+    uriParameters:
+        deviceId:
+            displayName: deviceId
+            description: UUID of onboarded device
+            type: string
+    description: |
+        Device control APIs. This API call must contain
+        an OAuth2 bearer token from an iF User with "CONTROL" role for the project.
+    put:
+        description: |
+            Update registration details of an application.
+        headers:
+            Authorization:
+                description: Authorization header with OAuth2 bearer token from iF IDP service
+                example: Bearer 0cb3887a-7f68-490a-bf15-c89aff96a6fb
+        body:
+            application/json:
+                example: !include deviceCommandsExample.json
+                schema: DeviceCommands
+
+        responses:
+            200:
+                description: command executed successfully
+            401:
+                description: Bearer token authentication failed
+                body:
+                    application/json:
+                        example: !include ../common/401Example.json
+            403:
+                description: User is not an CONTROL for the project
+                body:
+                    application/json:
+                        example: !include ../common/403Example.json
+            404:
+                description: application does not exists

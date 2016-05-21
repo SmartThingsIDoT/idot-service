@@ -1,0 +1,25 @@
+{
+  "title": "Accessible Devices Response Schema",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "device_id": {
+        "type": "string",
+        "description": "UUID assigned to device"
+      },
+      "device_type": {
+        "type": "string",
+        "description": "type of device"
+      },
+      "device_name": {
+        "type": "string",
+        "description": "name of device"
+      },
+      "device_location": {
+        "type": "string",
+        "description": "location of the device"
+      }
+    }
+  }
+}

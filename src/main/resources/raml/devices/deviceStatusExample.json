@@ -1,0 +1,9 @@
+{
+  [
+    {
+        "prop_name" : "on/off",
+        "prop_type" : "BOOLEAN",
+        "prop_value" : "TRUE"
+    }
+  ]
+}

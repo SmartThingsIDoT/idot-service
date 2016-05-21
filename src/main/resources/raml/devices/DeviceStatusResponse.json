@@ -1,0 +1,21 @@
+{
+  "title": "Device Status Response Schema",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "prop_name": {
+        "type": "string",
+        "description": "name of property"
+      },
+      "prop_type": {
+        "type": "string",
+        "description": "type of property, can be BOOLEAN | NUMBER | RANGE"
+      },
+      "prop_value": {
+        "type": "string",
+        "description": "value of the property"
+      }
+    }
+  }
+}

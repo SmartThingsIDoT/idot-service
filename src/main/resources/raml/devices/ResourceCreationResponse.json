@@ -1,0 +1,10 @@
+{
+    "title": "Resource Creation Response Schema",
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "string",
+            "description" : "UUID of the resource created"
+        }
+    }
+}
