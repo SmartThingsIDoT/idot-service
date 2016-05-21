@@ -1,0 +1,9 @@
+{
+  [
+    {
+        "id_type" : "email",
+        "id_key" : "user@email.com",
+        "has_access" : "TRUE"
+    }
+  ]
+}

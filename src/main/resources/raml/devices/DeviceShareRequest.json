@@ -1,0 +1,21 @@
+{
+  "title": "Device Sharing Schema",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "has_access": {
+        "type": "boolean",
+        "description": "specified if access is enabled or not"
+      },
+      "id_type": {
+        "type": "string",
+        "description": "type of identity"
+      },
+      "id_key": {
+        "type": "string",
+        "description": "key for identity"
+      }
+    }
+  }
+}

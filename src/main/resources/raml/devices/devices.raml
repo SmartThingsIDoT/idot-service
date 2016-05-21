@@ -11,6 +11,7 @@ schemas:
       DeviceDetails : !include DeviceDetailsResponse.json
       DeviceCommands : !include DeviceCommandsRequest.json
       DeviceStatus : !include DeviceStatusResponse.json
+      DeviceShare : !include DeviceShareRequest.json
 
 /devices:
     displayName: SmartThings Devices API
@@ -76,7 +77,7 @@ schemas:
     uriParameters:
         deviceId:
             displayName: deviceId
-            description: UUID of onboarded device
+            description: UUID of device to query
             type: string
     description: |
         Device details APIs. This API call must contain
@@ -113,7 +114,7 @@ schemas:
     uriParameters:
         deviceId:
             displayName: deviceId
-            description: UUID of onboarded device
+            description: UUID of device to poll
             type: string
     description: |
         Device control APIs. This API call must contain
@@ -150,14 +151,14 @@ schemas:
     uriParameters:
         deviceId:
             displayName: deviceId
-            description: UUID of onboarded device
+            description: UUID of device to control
             type: string
     description: |
         Device control APIs. This API call must contain
-        an OAuth2 bearer token from an iF User with "CONTROL" role for the project.
+        an OAuth2 bearer token from an iF User with "PATIENT" role for the project.
     put:
         description: |
-            Update registration details of an application.
+            Send device control commands.
         headers:
             Authorization:
                 description: Authorization header with OAuth2 bearer token from iF IDP service
@@ -176,7 +177,71 @@ schemas:
                     application/json:
                         example: !include ../common/401Example.json
             403:
-                description: User is not an CONTROL for the project
+                description: User is not an PATIENT for the project
+                body:
+                    application/json:
+                        example: !include ../common/403Example.json
+            404:
+                description: application does not exists
+
+/devices/{deviceId}/share:
+    displayName: Device Share
+    uriParameters:
+        deviceId:
+            displayName: deviceId
+            description: UUID of device to share
+            type: string
+    description: |
+        Device sharing APIs. This API call must contain
+        an OAuth2 bearer token from an iF User with "OPERATOR" role for the project.
+    get:
+        description: |
+            Get list of users that can access device
+        headers:
+            Authorization:
+                description: Authorization header with OAuth2 bearer token from iF IDP service
+                example: Bearer 0cb3887a-7f68-490a-bf15-c89aff96a6fb
+        responses:
+            200:
+                description: device status read successfully
+                body:
+                    application/json:
+                        example: !include deviceStatusExample.json
+                        schema: DeviceStatus
+            401:
+                description: Bearer token authentication failed
+                body:
+                    application/json:
+                        example: !include ../common/401Example.json
+            403:
+                description: User is not an OPERATOR for the project
+                body:
+                    application/json:
+                        example: !include ../common/403Example.json
+            404:
+                description: application does not exists
+    put:
+        description: |
+            Authorize a user for device access.
+        headers:
+            Authorization:
+                description: Authorization header with OAuth2 bearer token from iF IDP service
+                example: Bearer 0cb3887a-7f68-490a-bf15-c89aff96a6fb
+        body:
+            application/json:
+                example: !include deviceShareExample.json
+                schema: DeviceShare
+
+        responses:
+            200:
+                description: command executed successfully
+            401:
+                description: Bearer token authentication failed
+                body:
+                    application/json:
+                        example: !include ../common/401Example.json
+            403:
+                description: User is not an OPERATOR for the project
                 body:
                     application/json:
                         example: !include ../common/403Example.json
