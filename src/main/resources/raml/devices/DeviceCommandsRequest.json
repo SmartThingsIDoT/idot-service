@@ -13,6 +13,10 @@
       "cmd_value": {
         "type": "string",
         "description": "value for command"
+      },
+      "redirect_uri" : {
+        "type": "string",
+        "description": "redirect URI of the client"
       }
     }
 }
