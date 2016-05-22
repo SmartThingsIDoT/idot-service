@@ -12,6 +12,9 @@
   <system-properties>
     <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
   </system-properties>
+  <env-variables>
+	  <env-var name="idpServiceDbKeyspaceName" value="idot-service-test" />
+  </env-variables>
 
   <sessions-enabled>true</sessions-enabled>
   <!--

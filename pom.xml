@@ -31,13 +31,23 @@
     </pluginRepositories>
 
     <dependencies>
+        
+      <dependency>
+         <groupId>com.googlecode.objectify</groupId>
+          <artifactId>objectify</artifactId>
+          <version>4.0.1</version>
+      </dependency>
         <!-- Integratingfactor.com client library -->
 		<dependency>
 			<groupId>com.integratingfactor.idp</groupId>
 			<artifactId>lib-idp-client</artifactId>
 			<version>0.1.6-SNAPSHOT</version>
 		</dependency>
-        
+        <dependency>
+            <groupId>com.integratingfactor.idp</groupId>
+            <artifactId>lib-idp-gds</artifactId>
+            <version>0.1.0</version>
+        </dependency>
  		<!-- Spring MVC -->
 		<dependency>
 			<groupId>org.springframework</groupId>

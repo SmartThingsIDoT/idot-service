@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -21,10 +22,15 @@ import com.integratingfactor.idot.api.devices.model.AccessibleDevice;
 import com.integratingfactor.idot.api.devices.model.DeviceCommand;
 import com.integratingfactor.idot.api.devices.model.DeviceReqistration;
 import com.integratingfactor.idot.api.devices.model.ResourceCreationResponse;
+import com.integratingfactor.idot.service.db.devices.DeviceDao;
+import com.integratingfactor.idot.service.db.devices.DeviceDetail;
 import com.integratingfactor.idp.lib.client.rbac.IdpApiRbacDetails;
 
 public class DeviceServiceImpl implements DeviceService {
     private static Logger LOG = Logger.getLogger(DeviceService.class.getName());
+
+    @Autowired
+    DeviceDao deviceDao;
 
     @Override
     public ResourceCreationResponse onboardDevice(IdpApiRbacDetails auth, DeviceReqistration request, String url) {
@@ -35,11 +41,18 @@ public class DeviceServiceImpl implements DeviceService {
         ResourceCreationResponse response = new ResourceCreationResponse();
         if (token == null)
             return response;
-        // generate a new device registration ID
-        response.setId(UUID.randomUUID().toString());
+        // // generate a new device registration ID
+        // response.setId(UUID.randomUUID().toString());
+        // re use client ID as device ID, since one app, one device
+        response.setId(request.getClientId());
         // get device endpoint url
         DeviceEndpoints[] endpoints = getDeviceEndpoint(token);
         LOG.info("device registered at endpoint: " + endpoints[0].get("uri").toString());
+        DeviceDetail detail = new DeviceDetail();
+        detail.setDeviceId(response.getId());
+        detail.setToken(token.getValue());
+        detail.setEndpoint(endpoints[0].get("uri").toString());
+        deviceDao.createDevice(detail);
         return response;
     }
 
