@@ -5,10 +5,8 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import com.integratingfactor.idot.api.devices.model.AccessibleDevice;
-import com.integratingfactor.idot.api.devices.model.DeviceCommands;
-import com.integratingfactor.idot.api.devices.model.DeviceDetail;
+import com.integratingfactor.idot.api.devices.model.DeviceCommand;
 import com.integratingfactor.idot.api.devices.model.DeviceReqistration;
-import com.integratingfactor.idot.api.devices.model.DeviceStatu;
 import com.integratingfactor.idot.api.devices.model.ResourceCreationResponse;
 import com.integratingfactor.idp.lib.client.rbac.IdpApiRbacDetails;
 
@@ -20,6 +18,7 @@ public class DeviceServiceImpl implements DeviceService {
         // TODO Auto-generated method stub
         ResourceCreationResponse response = new ResourceCreationResponse();
         response.setId("1234");
+        LOG.info("sending back fake device id");
         return response;
     }
 
@@ -32,25 +31,26 @@ public class DeviceServiceImpl implements DeviceService {
         device.setDeviceType("switch");
         List<AccessibleDevice> devices = new ArrayList<AccessibleDevice>();
         devices.add(device);
+        LOG.info("sending back fake list of devices");
         return devices;
     }
 
     @Override
-    public List<DeviceDetail> getDeviceDetails(IdpApiRbacDetails auth, String deviceId) {
-        // TODO Auto-generated method stub
-        return null;
+    public DeviceCommand getDeviceStatus(IdpApiRbacDetails auth, String deviceId) {
+        DeviceCommand status = new DeviceCommand();
+        status.setCmdName("Light Level");
+        status.setCmdType("RANGE");
+        status.setCmdValue("2");
+        status.setMinRange(new Double(0));
+        status.setMaxRange(new Double(3));
+        LOG.info("sending back fake Light Level");
+        return status;
     }
 
     @Override
-    public List<DeviceStatu> getDeviceStatus(IdpApiRbacDetails auth, String deviceId) {
+    public void sendCommand(IdpApiRbacDetails auth, DeviceCommand commands, String deviceId) {
         // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void sendCommand(IdpApiRbacDetails auth, DeviceCommands commands, String deviceId) {
-        // TODO Auto-generated method stub
-
+        LOG.info("fake handler for device command -- NO OP");
     }
 
 }

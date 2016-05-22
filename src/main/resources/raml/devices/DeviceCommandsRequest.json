@@ -14,9 +14,13 @@
         "type": "string",
         "description": "value for command"
       },
-      "redirect_uri" : {
-        "type": "string",
-        "description": "redirect URI of the client"
+      "min_range": {
+        "type": "number",
+        "description": "minimum value for input"
+      },
+      "max_range": {
+        "type": "number",
+        "description": "minimum value for input"
       }
     }
 }

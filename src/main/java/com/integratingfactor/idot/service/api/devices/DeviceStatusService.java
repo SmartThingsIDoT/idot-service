@@ -5,6 +5,7 @@ import javax.ws.rs.Path;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.integratingfactor.idot.api.devices.model.DeviceCommand;
 import com.integratingfactor.idot.api.devices.resource.DeviceStatusResource;
 import com.integratingfactor.idot.service.core.devices.DeviceService;
 import com.integratingfactor.idp.lib.client.filter.IdpApiAuthFilter;
@@ -21,6 +22,13 @@ public class DeviceStatusService implements DeviceStatusResource {
             throws Exception {
         return GetDevicesByDeviceIdStatusResponse
                 .withJsonOK(deviceService.getDeviceStatus(IdpApiAuthFilter.getRbacDetails(), deviceId));
+    }
+
+    @Override
+    public PutDevicesByDeviceIdStatusResponse putDevicesByDeviceIdStatus(String deviceId, String authorization,
+            DeviceCommand entity) throws Exception {
+        deviceService.sendCommand(IdpApiAuthFilter.getRbacDetails(), entity, deviceId);
+        return null;
     }
 
 }

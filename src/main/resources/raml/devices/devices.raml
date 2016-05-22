@@ -9,7 +9,7 @@ schemas:
       ResourceCreationResponse: !include ResourceCreationResponse.json
       AccessibleDevices: !include AccessibleDevicesResponse.json
       DeviceDetails : !include DeviceDetailsResponse.json
-      DeviceCommands : !include DeviceCommandsRequest.json
+      DeviceCommand : !include DeviceCommandsRequest.json
       DeviceStatus : !include DeviceStatusResponse.json
       DeviceShare : !include DeviceShareRequest.json
 
@@ -72,42 +72,6 @@ schemas:
             404:
                 description: project does not exists
 
-/devices/{deviceId}:
-    displayName: Device Details
-    uriParameters:
-        deviceId:
-            displayName: deviceId
-            description: UUID of device to query
-            type: string
-    description: |
-        Device details APIs. This API call must contain
-        an OAuth2 bearer token from an iF User with "PATIENT" role for the project.
-    get:
-        description: |
-            Get device details
-        headers:
-            Authorization:
-                description: Authorization header with OAuth2 bearer token from iF IDP service
-                example: Bearer 0cb3887a-7f68-490a-bf15-c89aff96a6fb
-        responses:
-            200:
-                description: found device details
-                body:
-                    application/json:
-                        example: !include deviceDetailsExample.json
-                        schema: DeviceDetails
-            401:
-                description: Bearer token authentication failed
-                body:
-                    application/json:
-                        example: !include ../common/401Example.json
-            403:
-                description: User is not an PATIENT for the project
-                body:
-                    application/json:
-                        example: !include ../common/403Example.json
-            404:
-                description: device does not exists
 
 /devices/{deviceId}/status:
     displayName: Device status
@@ -132,7 +96,7 @@ schemas:
                 body:
                     application/json:
                         example: !include deviceStatusExample.json
-                        schema: DeviceStatus
+                        schema: DeviceCommand
             401:
                 description: Bearer token authentication failed
                 body:
@@ -145,17 +109,6 @@ schemas:
                         example: !include ../common/403Example.json
             404:
                 description: application does not exists
-
-/devices/{deviceId}/commands:
-    displayName: Device control
-    uriParameters:
-        deviceId:
-            displayName: deviceId
-            description: UUID of device to control
-            type: string
-    description: |
-        Device control APIs. This API call must contain
-        an OAuth2 bearer token from an iF User with "PATIENT" role for the project.
     put:
         description: |
             Send device control commands.
@@ -166,7 +119,7 @@ schemas:
         body:
             application/json:
                 example: !include deviceCommandsExample.json
-                schema: DeviceCommands
+                schema: DeviceCommand
 
         responses:
             200:
@@ -183,6 +136,7 @@ schemas:
                         example: !include ../common/403Example.json
             404:
                 description: application does not exists
+
 
 /devices/{deviceId}/share:
     displayName: Device Share
