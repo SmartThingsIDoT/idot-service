@@ -9,6 +9,7 @@ import com.integratingfactor.idot.api.devices.model.DeviceReqistration;
 import com.integratingfactor.idot.api.devices.resource.SmartThingsDevicesAPIResource;
 import com.integratingfactor.idot.service.core.devices.DeviceService;
 import com.integratingfactor.idp.lib.client.filter.IdpApiAuthFilter;
+import com.integratingfactor.idp.lib.client.rbac.IdpRbacAccessDeniedException;
 
 @Component
 @Path("devices")
@@ -24,8 +25,7 @@ public class SmartThingsDevicesService implements SmartThingsDevicesAPIResource 
 
     @Override
     public PostDevicesResponse postDevices(String authorization, DeviceReqistration entity) throws Exception {
-        return PostDevicesResponse
-                .withJsonCreated(deviceService.onboardDevice(IdpApiAuthFilter.getRbacDetails(), entity));
+        throw new IdpRbacAccessDeniedException("method not implemented");
     }
 
 }

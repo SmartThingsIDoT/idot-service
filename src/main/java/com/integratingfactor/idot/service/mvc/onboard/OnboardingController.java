@@ -1,11 +1,10 @@
 package com.integratingfactor.idot.service.mvc.onboard;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -21,12 +20,16 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.integratingfactor.idot.api.devices.model.DeviceReqistration;
+import com.integratingfactor.idot.service.core.devices.DeviceService;
+
 @Controller
 public class OnboardingController {
 	private static Logger LOG = Logger.getLogger(OnboardingController.class.getName());
 	
-    // @RequestMapping(value = "/onboard?redirect={callBack}", method =
-    // RequestMethod.GET)
+    @Autowired
+    DeviceService deviceService;
+
     @RequestMapping(value = "/onboard")
     public ModelAndView getOnboardForm(HttpServletRequest request, @RequestParam("redirect") String redirect) {
         LOG.info("Request to onboard device at " + request.getRequestURL() + " from " + redirect);
@@ -54,9 +57,12 @@ public class OnboardingController {
     @RequestMapping(value = "/onboard/callback")
     public String callback(HttpServletRequest request, @RequestParam("code") String code) {
         LOG.info("got auth code " + code);
-        OAuth2AccessToken token = getToken(code, getIfExists(request.getSession().getAttribute("clientId")),
-                getIfExists(request.getSession().getAttribute("clientSecret")), request.getRequestURL().toString());
-        LOG.info("got token :" + (token != null ? token.getValue() : null));
+        DeviceReqistration reg = new DeviceReqistration();
+        reg.setAuthCode(code);
+        reg.setClientId(getIfExists(request.getSession().getAttribute("clientId")));
+        reg.setClientSecret(getIfExists(request.getSession().getAttribute("clientSecret")));
+        LOG.info("Onboarded device ID: "
+                + deviceService.onboardDevice(null, reg, request.getRequestURL().toString()).getId());
         return "redirect:" + request.getSession().getAttribute("redirect").toString();
     }
     
