@@ -3,7 +3,7 @@ package com.integratingfactor.idot.service.core.devices;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +18,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.integratingfactor.idot.api.devices.model.AccessibleDevice;
 import com.integratingfactor.idot.api.devices.model.DeviceCommand;
 import com.integratingfactor.idot.api.devices.model.DeviceReqistration;
@@ -70,9 +72,9 @@ public class DeviceServiceImpl implements DeviceService {
         for (DeviceDetail d : deviceDao.getAllDevices()) {
             AccessibleDevice device = new AccessibleDevice();
             device.setDeviceId(d.getDeviceId());
-            device.setDeviceName("test device");
-            device.setDeviceLocation("home");
-            device.setDeviceType("switch");
+            device.setDeviceName(d.getName());
+            device.setDeviceLocation(d.getLocation());
+            device.setDeviceType(d.getType());
             devices.add(device);
         }
 
@@ -81,13 +83,22 @@ public class DeviceServiceImpl implements DeviceService {
 
     @Override
     public DeviceCommand getDeviceStatus(IdpApiRbacDetails auth, String deviceId) {
+        DeviceDetail device = deviceDao.getDevice(deviceId);
+        DeviceEndpoints info = getDeviceInfo(device.getToken(), device.getEndpoint() + "/status");
+        try {
+            LOG.info("Got info object: " + new ObjectMapper().writeValueAsString(info));
+        } catch (JsonProcessingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        LOG.info("got device status: " + info.get("name").toString() + " = " + info.get("value").toString());
         DeviceCommand status = new DeviceCommand();
-        status.setCmdName("Light Level");
-        status.setCmdType("RANGE");
-        status.setCmdValue("2");
+        status.setCmdName(info.get("name").toString());
+        status.setCmdType(info.get("type").toString());
+        status.setCmdValue(info.get("value").toString());
         status.setMinRange(new Double(0));
         status.setMaxRange(new Double(3));
-        LOG.info("sending back fake Light Level");
+        // LOG.info("sending back fake Light Level");
         return status;
     }
 
@@ -95,6 +106,12 @@ public class DeviceServiceImpl implements DeviceService {
     public void sendCommand(IdpApiRbacDetails auth, DeviceCommand commands, String deviceId) {
         // TODO Auto-generated method stub
         LOG.info("fake handler for device command -- NO OP");
+        Map<String, String> cmd = new HashMap<String, String>();
+        cmd.put("name", commands.getCmdName());
+        cmd.put("type", commands.getCmdType());
+        cmd.put("value", commands.getCmdValue());
+        DeviceDetail device = deviceDao.getDevice(deviceId);
+        setDeviceInfo(device.getToken(), device.getEndpoint() + "/status", cmd);
     }
 
     RestTemplate restClient = new RestTemplate();
@@ -123,6 +140,22 @@ public class DeviceServiceImpl implements DeviceService {
             LOG.warning("Error in IDP request: " + e.getMessage());
         }
         return null;
+    }
+
+    private void setDeviceInfo(String token, String url, Map<String, String> cmd) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        try {
+            LOG.info("calling endoints API");
+            restClient.exchange(url, HttpMethod.PUT, new HttpEntity<Map<String, String>>(cmd, headers),
+                    Object.class);
+
+        } catch (HttpClientErrorException e) {
+            LOG.warning("Error in IDP request: " + e.getMessage() + " : " + e.getResponseBodyAsString());
+        } catch (RestClientException e) {
+            LOG.warning("Error in IDP request: " + e.getMessage());
+        }
     }
 
     private DeviceEndpoints[] getDeviceEndpoint(OAuth2AccessToken token) {
