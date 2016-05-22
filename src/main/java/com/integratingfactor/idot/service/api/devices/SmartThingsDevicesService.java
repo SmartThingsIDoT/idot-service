@@ -1,40 +1,31 @@
 package com.integratingfactor.idot.service.api.devices;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.ws.rs.Path;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.integratingfactor.idot.api.devices.model.AccessibleDevice;
 import com.integratingfactor.idot.api.devices.model.DeviceReqistration;
-import com.integratingfactor.idot.api.devices.model.ResourceCreationResponse;
 import com.integratingfactor.idot.api.devices.resource.SmartThingsDevicesAPIResource;
+import com.integratingfactor.idot.service.core.devices.DeviceService;
+import com.integratingfactor.idp.lib.client.filter.IdpApiAuthFilter;
 
 @Component
 @Path("devices")
 public class SmartThingsDevicesService implements SmartThingsDevicesAPIResource {
 
+    @Autowired
+    DeviceService deviceService;
+
     @Override
     public GetDevicesResponse getDevices(String authorization) throws Exception {
-        // TODO Auto-generated method stub
-        AccessibleDevice device = new AccessibleDevice();
-        device.setDeviceId("1234");
-        device.setDeviceName("test device");
-        device.setDeviceLocation("home");
-        device.setDeviceType("switch");
-        List<AccessibleDevice> devices = new ArrayList<AccessibleDevice>();
-        devices.add(device);
-        return GetDevicesResponse.withJsonOK(devices);
+        return GetDevicesResponse.withJsonOK(deviceService.getAllDevices(IdpApiAuthFilter.getRbacDetails()));
     }
 
     @Override
     public PostDevicesResponse postDevices(String authorization, DeviceReqistration entity) throws Exception {
-        // TODO Auto-generated method stub
-        ResourceCreationResponse response = new ResourceCreationResponse();
-        response.setId("1234");
-        return PostDevicesResponse.withJsonCreated(response);
+        return PostDevicesResponse
+                .withJsonCreated(deviceService.onboardDevice(IdpApiAuthFilter.getRbacDetails(), entity));
     }
 
 }
