@@ -38,6 +38,12 @@ public class DeviceDaoDeviceDetailByDeviceIdUtil {
 
         String endpoint;
 
+        String name;
+
+        String location;
+
+        String type;
+
         public String getDeviceId() {
             return deviceId;
         }
@@ -69,6 +75,30 @@ public class DeviceDaoDeviceDetailByDeviceIdUtil {
         public void setPk(Key<DeviceDaoDeviceDetailByDeviceIdPk> pk) {
             this.pk = pk;
         }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getLocation() {
+            return location;
+        }
+
+        public void setLocation(String location) {
+            this.location = location;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
     }
 
     public static Key<DeviceDaoDeviceDetailByDeviceIdPk> toPk() {
@@ -89,6 +119,9 @@ public class DeviceDaoDeviceDetailByDeviceIdUtil {
         entity.deviceId = device.getDeviceId();
         entity.token = device.getToken();
         entity.endpoint = device.getEndpoint();
+        entity.name = device.getName();
+        entity.location = device.getLocation();
+        entity.type = device.getType();
         entity.pk = toPk();
         return entity;
     }
@@ -98,6 +131,9 @@ public class DeviceDaoDeviceDetailByDeviceIdUtil {
         model.setDeviceId(entity.deviceId);
         model.setEndpoint(entity.endpoint);
         model.setToken(entity.token);
+        model.setName(entity.name);
+        model.setLocation(entity.location);
+        model.setType(entity.type);
         return model;
     }
 

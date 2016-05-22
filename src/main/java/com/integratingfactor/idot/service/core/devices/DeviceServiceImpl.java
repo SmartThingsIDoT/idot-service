@@ -48,24 +48,34 @@ public class DeviceServiceImpl implements DeviceService {
         // get device endpoint url
         DeviceEndpoints[] endpoints = getDeviceEndpoint(token);
         LOG.info("device registered at endpoint: " + endpoints[0].get("uri").toString());
+        // get device info
+        DeviceEndpoints info = getDeviceInfo(token.getValue(), endpoints[0].get("uri").toString() + "/info");
+        LOG.info("got device: " + info.get("name").toString());
         DeviceDetail detail = new DeviceDetail();
         detail.setDeviceId(response.getId());
         detail.setToken(token.getValue());
         detail.setEndpoint(endpoints[0].get("uri").toString());
+        detail.setName(info.get("name").toString());
+        detail.setLocation(info.get("location").toString());
+        detail.setType(info.get("type").toString());
+
         deviceDao.createDevice(detail);
         return response;
     }
 
     @Override
     public List<AccessibleDevice> getAllDevices(IdpApiRbacDetails auth) {
-        AccessibleDevice device = new AccessibleDevice();
-        device.setDeviceId("1234");
-        device.setDeviceName("test device");
-        device.setDeviceLocation("home");
-        device.setDeviceType("switch");
         List<AccessibleDevice> devices = new ArrayList<AccessibleDevice>();
-        devices.add(device);
         LOG.info("sending back fake list of devices");
+        for (DeviceDetail d : deviceDao.getAllDevices()) {
+            AccessibleDevice device = new AccessibleDevice();
+            device.setDeviceId(d.getDeviceId());
+            device.setDeviceName("test device");
+            device.setDeviceLocation("home");
+            device.setDeviceType("switch");
+            devices.add(device);
+        }
+
         return devices;
     }
 
@@ -98,6 +108,23 @@ public class DeviceServiceImpl implements DeviceService {
         
     }
     
+    private DeviceEndpoints getDeviceInfo(String token, String url) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        try {
+            LOG.info("calling endoints API");
+            return restClient.exchange(url, HttpMethod.GET, new HttpEntity<Object>(headers), DeviceEndpoints.class)
+                    .getBody();
+
+        } catch (HttpClientErrorException e) {
+            LOG.warning("Error in IDP request: " + e.getMessage() + " : " + e.getResponseBodyAsString());
+        } catch (RestClientException e) {
+            LOG.warning("Error in IDP request: " + e.getMessage());
+        }
+        return null;
+    }
+
     private DeviceEndpoints[] getDeviceEndpoint(OAuth2AccessToken token) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token.getValue());
